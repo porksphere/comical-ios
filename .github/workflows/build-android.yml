@@ -18,16 +18,25 @@ on:
       - 'package-lock.json'
       - '.github/workflows/build-android.yml'
 
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      # Bun is the package manager; Node is still required because Metro and the
+      # Gradle "bundle React Native code" phase shell out to `node`.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - uses: actions/setup-java@v4
         with:
@@ -35,14 +44,14 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
         env:
           # Required once @porksphere/core is consumed from GitHub Packages
           # instead of the in-repo workspace stub. Harmless until then.
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate native Android project (CNG)
-        run: npx expo prebuild --platform android --no-install
+        run: bunx expo prebuild --platform android --no-install
         working-directory: apps/mobile
 
       - name: Build release APK

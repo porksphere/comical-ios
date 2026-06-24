@@ -38,10 +38,11 @@ The real core is a **separate repository** published to **GitHub Packages**. Unt
 first release, a local workspace stub at `packages/core` resolves the dependency so the
 import path, Metro resolution, and CI auth are exercised end-to-end.
 
-- **CI / reproducible builds:** `npm ci` resolves `@porksphere/core` (from the stub today,
-  from GitHub Packages once published). `.npmrc` maps the `@porksphere` scope to
-  `npm.pkg.github.com`; set `NODE_AUTH_TOKEN` to a token with `read:packages`.
-- **Editing core + app together:** clone the core repo and `npm link` it; `metro.config.js`
+- **CI / reproducible builds:** `bun install --frozen-lockfile` resolves `@porksphere/core`
+  (from the stub today, from GitHub Packages once published). `.npmrc` — which Bun also reads —
+  maps the `@porksphere` scope to `npm.pkg.github.com`; set `NODE_AUTH_TOKEN` to a token with
+  `read:packages`.
+- **Editing core + app together:** clone the core repo and `bun link` it; `metro.config.js`
   already watches the monorepo root and extra `nodeModulesPaths`, so Metro picks up the
   linked source and hot-reloads core edits.
 - **Cut-over:** when the published core exists, delete `packages/core`, drop it from the
@@ -49,11 +50,14 @@ import path, Metro resolution, and CI auth are exercised end-to-end.
 
 ## Develop
 
+Bun is the package manager. Node is still used under the hood — Metro and the
+native build phases (Gradle/Xcode "bundle React Native code") shell out to `node`.
+
 ```bash
-npm install            # install all workspaces
-npm run start          # expo start (apps/mobile)
-npm run ios            # or: npm run android
-npm run typecheck      # tsc across app + core
+bun install            # install all workspaces
+bun start              # expo start (apps/mobile)
+bun run ios            # or: bun run android
+bun run typecheck      # tsc across app + core
 ```
 
 ## Build (GitHub-hosted runners, local builds — no Expo cloud)
