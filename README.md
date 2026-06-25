@@ -13,7 +13,7 @@ comical/
 │   └── mobile/                 # Expo app (expo-router, New Architecture)
 │       ├── src/app/
 │       │   ├── _layout.tsx     # root native Stack
-│       │   ├── (tabs)/         # native tab bar group (index, explore)
+│       │   ├── (tabs)/         # native 5-tab group: Browse/Library/History/Activity/Settings
 │       │   └── detail.tsx      # pushed native-stack screen + GlassView demo
 │       ├── app.json            # Expo config (bundleId: com.porksphere.comical)
 │       └── eas.json            # build profiles (optional `eas build --local` path)
