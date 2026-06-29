@@ -11,6 +11,10 @@ body { background-color: #fff; }
 (function () {
   if (typeof document === 'undefined') return;
   var stop = function (e) { e.preventDefault(); };
+  // Cancel a pinch the moment a second finger lands, before it's recognised.
+  document.addEventListener('touchstart', function (e) {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
   // Safari/WebKit pinch gesture events.
   document.addEventListener('gesturestart', stop, { passive: false });
   document.addEventListener('gesturechange', stop, { passive: false });
@@ -18,7 +22,9 @@ body { background-color: #fff; }
   // iOS sets a non-standard `scale` on touch events during a pinch; only then
   // do we cancel (so one-finger scrolling/swiping is left alone).
   document.addEventListener('touchmove', function (e) {
-    if (typeof e.scale === 'number' && e.scale !== 1) e.preventDefault();
+    if ((typeof e.scale === 'number' && e.scale !== 1) || e.touches.length > 1) {
+      e.preventDefault();
+    }
   }, { passive: false });
 })();</script><style id="react-native-stylesheet">[stylesheet-group="0"]{}
 body{margin:0;}
