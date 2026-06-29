@@ -2,7 +2,12 @@
 body { background-color: #fff; }
 @media (prefers-color-scheme: dark) {
   body { background-color: #000; }
-}</style><script>
+}
+/* Allow one-finger panning/scrolling but forbid the browser's pinch- and
+   double-tap-zoom everywhere. iOS WebKit (Safari + Chrome) honours touch-action
+   for this even though it ignores the viewport scale lock. The reader's own
+   pinch zoom runs off pointer events and is unaffected. */
+* { touch-action: pan-x pan-y; }</style><script>
 (function () {
   if (typeof document === 'undefined') return;
   var stop = function (e) { e.preventDefault(); };
